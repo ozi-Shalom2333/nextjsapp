@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 export default function useRecommendation() {
   const [recommendation, setRecommendation] = useState('');
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -9,6 +10,7 @@ export default function useRecommendation() {
     setLoading(true);
     setError('');
     setRecommendation('');
+    setImages([]);
 
     try {
       const response = await fetch('/api/recommend', {
@@ -25,6 +27,7 @@ export default function useRecommendation() {
 
       const data = await response.json();
       setRecommendation(data.recommendation);
+      setImages(data.images || []);
     } catch (err) {
       setError('Failed to get recommendations. Please try again.');
       console.error('Error:', err);
@@ -36,6 +39,7 @@ export default function useRecommendation() {
   return {
     getRecommendation,
     recommendation,
+    images,
     loading,
     error,
   };

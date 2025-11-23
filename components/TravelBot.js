@@ -1,10 +1,11 @@
 'use client';
 import { useState } from 'react';
 import useRecommendation from '@/hooks/useRecommendation';
+import ImageGallery from '@/components/ImageGallery';
 
 export default function TravelBot() {
   const [place, setPlace] = useState('');
-  const { getRecommendation, recommendation, loading, error } = useRecommendation();
+  const { getRecommendation, recommendation, images, loading, error } = useRecommendation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,31 +13,51 @@ export default function TravelBot() {
     await getRecommendation(place);
   };
 
-  // Function to format the recommendation text with proper styling
   const formatRecommendation = (text) => {
     if (!text) return null;
 
-    // Split by lines and process each line
+    
     return text.split('\n').map((line, index) => {
       const trimmedLine = line.trim();
       
-      // Skip empty lines
+    
       if (!trimmedLine) return null;
 
-      // Check for section headers (lines with ** ** or that look like headers)
-      if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
+      
+      if (trimmedLine.startsWith('### **') && trimmedLine.endsWith('**')) {
+        const cleanText = trimmedLine.replace('### **', '').replace('**', '');
         return (
-          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0">
-            {trimmedLine.replace(/\*\*/g, '')}
+          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+            {cleanText}
           </h3>
         );
       }
 
-      // Check for bullet points or list items
+      
+      if (trimmedLine.startsWith('### ')) {
+        const cleanText = trimmedLine.replace('### ', '');
+        return (
+          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+            {cleanText}
+          </h3>
+        );
+      }
+
+      
+      if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
+        const cleanText = trimmedLine.replace(/\*\*/g, '');
+        return (
+          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+            {cleanText}
+          </h3>
+        );
+      }
+
+      
       if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
         const content = trimmedLine.substring(2).trim();
         
-        // Check if the bullet point has bold text
+        
         if (content.includes('**')) {
           const parts = content.split('**');
           return (
@@ -63,7 +84,7 @@ export default function TravelBot() {
         );
       }
 
-      // Regular paragraph
+      
       return (
         <p key={index} className="text-gray-700 mb-3 leading-relaxed">
           {trimmedLine}
@@ -74,8 +95,9 @@ export default function TravelBot() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         
+
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             Travel Recommendation Bot
@@ -127,7 +149,10 @@ export default function TravelBot() {
               {formatRecommendation(recommendation)}
             </div>
 
-        
+            
+            <ImageGallery images={images} place={place} />
+
+            
             <div className="mt-8 pt-6 border-t border-gray-100">
               <div className="flex items-center text-sm text-gray-500">
                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -139,7 +164,7 @@ export default function TravelBot() {
           </div>
         )}
 
-    
+        {/* Loading Skeleton */}
         {loading && (
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
             <div className="animate-pulse">
@@ -149,6 +174,15 @@ export default function TravelBot() {
                 <div className="h-4 bg-gray-200 rounded w-5/6"></div>
                 <div className="h-4 bg-gray-200 rounded w-4/6"></div>
                 <div className="h-4 bg-gray-200 rounded w-3/4 mt-4"></div>
+              </div>
+              {/* Image gallery skeleton */}
+              <div className="mt-8">
+                <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
