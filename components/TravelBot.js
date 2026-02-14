@@ -1,7 +1,15 @@
 'use client';
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plane, Compass, MapPin, Sparkles, Loader2, ArrowRight, Share2, Printer } from 'lucide-react';
 import useRecommendation from '@/hooks/useRecommendation';
 import ImageGallery from '@/components/ImageGallery';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export default function TravelBot() {
   const [place, setPlace] = useState('');
@@ -16,177 +24,267 @@ export default function TravelBot() {
   const formatRecommendation = (text) => {
     if (!text) return null;
 
-    
     return text.split('\n').map((line, index) => {
       const trimmedLine = line.trim();
-      
-    
       if (!trimmedLine) return null;
 
-      
       if (trimmedLine.startsWith('### **') && trimmedLine.endsWith('**')) {
         const cleanText = trimmedLine.replace('### **', '').replace('**', '');
         return (
-          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+            key={index} 
+            className="text-xl font-bold text-slate-800 dark:text-white mt-10 mb-4 first:mt-0 flex items-center gap-3 border-l-4 border-emerald-500 pl-4 py-1"
+          >
             {cleanText}
-          </h3>
+          </motion.h3>
         );
       }
 
-      
       if (trimmedLine.startsWith('### ')) {
         const cleanText = trimmedLine.replace('### ', '');
         return (
-          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+            key={index} 
+            className="text-xl font-bold text-slate-800 dark:text-white mt-10 mb-4 first:mt-0 flex items-center gap-3 border-l-4 border-emerald-500 pl-4 py-1"
+          >
             {cleanText}
-          </h3>
+          </motion.h3>
         );
       }
 
-      
       if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
         const cleanText = trimmedLine.replace(/\*\*/g, '');
         return (
-          <h3 key={index} className="text-xl font-semibold text-gray-800 mt-6 mb-3 first:mt-0 border-l-4 border-blue-500 pl-3">
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+            key={index} 
+            className="text-xl font-bold text-slate-800 dark:text-white mt-10 mb-4 first:mt-0 flex items-center gap-3 border-l-4 border-emerald-500 pl-4 py-1"
+          >
             {cleanText}
-          </h3>
+          </motion.h3>
         );
       }
 
-      
       if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
         const content = trimmedLine.substring(2).trim();
-        
-        
-        if (content.includes('**')) {
-          const parts = content.split('**');
-          return (
-            <li key={index} className="flex items-start mb-2">
-              <span className="text-blue-500 mr-2 mt-1">•</span>
-              <span className="text-gray-700">
-                {parts.map((part, partIndex) => 
-                  partIndex % 2 === 1 ? (
-                    <strong key={partIndex} className="text-gray-900">{part}</strong>
-                  ) : (
-                    part
-                  )
-                )}
-              </span>
-            </li>
-          );
-        }
-
+        const parts = content.split('**');
         return (
-          <li key={index} className="flex items-start mb-2">
-            <span className="text-blue-500 mr-2 mt-1">•</span>
-            <span className="text-gray-700">{content}</span>
-          </li>
+          <motion.li 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: index * 0.05 }}
+            key={index} 
+            className="flex items-start mb-4 group"
+          >
+            <span className="text-emerald-500 mr-4 mt-1.5 shrink-0">
+              <Compass className="w-4 h-4" />
+            </span>
+            <span className="text-slate-600 dark:text-slate-300 leading-relaxed">
+              {parts.map((part, partIndex) => 
+                partIndex % 2 === 1 ? (
+                  <strong key={partIndex} className="text-slate-900 dark:text-white font-semibold">{part}</strong>
+                ) : (
+                  part
+                )
+              )}
+            </span>
+          </motion.li>
         );
       }
 
-      
       return (
-        <p key={index} className="text-gray-700 mb-3 leading-relaxed">
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.05 }}
+          key={index} 
+          className="text-slate-600 dark:text-slate-300 mb-5 leading-relaxed text-lg"
+        >
           {trimmedLine}
-        </p>
+        </motion.p>
       );
     });
   };
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-12 px-4 transition-colors duration-500">
+      <div className="max-w-4xl lg:max-w-5xl mx-auto">
         
+        {/* Header */}
+        <header className="mb-12">
+          <motion.nav 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-between py-4"
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-emerald-600 rounded-lg">
+                <Plane className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-lg font-bold text-slate-900 dark:text-white">
+                NomadAI
+              </span>
+            </div>
+            
+            <ModeToggle />
+          </motion.nav>
+        </header>
 
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Travel Recommendation Bot
-          </h1>
-          <p className="text-lg text-gray-600">
-            What city or country do you want to visit?
-          </p>
-        </div>
-
-        
-        <form onSubmit={handleSubmit} className="mb-8">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              value={place}
-              onChange={(e) => setPlace(e.target.value)}
-              placeholder="Enter a city or country..."
-              className="flex-1 px-4 text-black py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading || !place.trim()}
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md font-medium"
+        <main>
+          <div className="max-w-3xl mx-auto mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center"
             >
-              {loading ? 'Getting Recommendations...' : 'Get Recommendation'}
-            </button>
-          </div>
-        </form>
+              <Badge variant="outline" className="mb-6 py-1.5 px-4 rounded-full text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                AI-Powered Travel Guide
+              </Badge>
+              <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">
+                Where to next?
+              </h1>
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10">
+                Discover your perfect trip with NomadAI. tailored itineraries for every style of traveler.
+              </p>
 
-        
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800 font-medium">{error}</p>
-          </div>
-        )}
-
-        
-        {recommendation && (
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 animate-fade-in">
-            <div className="flex items-center mb-6">
-              <div className="w-3 h-8 bg-blue-500 rounded-full mr-3"></div>
-              <h2 className="text-2xl font-bold text-gray-800">
-                Travel Guide: {place}
-              </h2>
-            </div>
-            
-            <div className="space-y-2">
-              {formatRecommendation(recommendation)}
-            </div>
-
-            
-            <ImageGallery images={images} place={place} />
-
-            
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <div className="flex items-center text-sm text-gray-500">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-                AI-powered recommendations • Refresh for more details
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Loading Skeleton */}
-        {loading && (
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
-            <div className="animate-pulse">
-              <div className="h-7 bg-gray-200 rounded w-1/3 mb-6"></div>
-              <div className="space-y-3">
-                <div className="h-4 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mt-4"></div>
-              </div>
-              {/* Image gallery skeleton */}
-              <div className="mt-8">
-                <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-gray-200 rounded-lg"></div>
-                  ))}
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
+                <div className="relative flex-1">
+                  <Input
+                    type="text"
+                    value={place}
+                    onChange={(e) => setPlace(e.target.value)}
+                    placeholder="e.g. Kyoto, Japan"
+                    className="px-6 py-6 text-lg rounded-full border-slate-200 dark:border-slate-800 transition-all bg-white dark:bg-slate-950 shadow-sm focus:ring-2 focus:ring-emerald-500/20"
+                    disabled={loading}
+                  />
+                  <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
                 </div>
-              </div>
-            </div>
+                <Button
+                  type="submit"
+                  disabled={loading || !place.trim()}
+                  className="py-6 px-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full text-lg font-bold shadow-lg shadow-emerald-600/20 active:scale-95 transition-all w-full sm:w-auto"
+                >
+                  {loading ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <ArrowRight className="w-5 h-5" />
+                  )}
+                </Button>
+              </form>
+            </motion.div>
           </div>
-        )}
+
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-10 px-6 py-4 bg-red-50 dark:bg-red-950/20 border-2 border-red-100 dark:border-red-900/30 rounded-2xl flex items-center gap-3 text-red-600 dark:text-red-400 font-semibold"
+              >
+                <Sparkles className="w-5 h-5" />
+                {error}
+              </motion.div>
+            )}
+
+            {recommendation && (
+              <motion.div
+                key="recommendation"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, type: 'spring', damping: 20 }}
+              >
+                <Card className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-none shadow-2xl dark:shadow-[0_40px_100px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden transition-all duration-500">
+                  <CardHeader className="p-8 md:p-14 pb-0">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                      <div>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-1 bg-emerald-500 rounded-full" />
+                          <span className="text-emerald-500 font-bold uppercase tracking-[0.2em] text-xs">Nomad Verified Guide</span>
+                        </div>
+                        <CardTitle className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white italic tracking-tighter">
+                          {place.toUpperCase()}
+                        </CardTitle>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="icon" className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl">
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="icon" className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl">
+                          <Printer className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-14 pt-0">
+                    <div className="max-w-none">
+                      {formatRecommendation(recommendation)}
+                    </div>
+                    
+                    <div className="mt-20">
+                      <ImageGallery images={images} place={place} />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="bg-white/5 p-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-3 text-slate-400 text-sm font-bold uppercase tracking-widest">
+                      <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-full" />
+                      Live Recommendations
+                    </div>
+                    <p className="text-slate-500 text-xs font-medium">Generated based on world-class travel data • NomadAI v2.0</p>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            )}
+
+            {loading && (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Card className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 p-8 md:p-14 rounded-[2.5rem] shadow-2xl">
+                  <div className="space-y-10">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-3">
+                        <Skeleton className="h-4 w-48 rounded-full" />
+                        <Skeleton className="h-12 w-64 rounded-xl" />
+                      </div>
+                      <div className="flex gap-2">
+                        <Skeleton className="h-10 w-10 rounded-xl" />
+                        <Skeleton className="h-10 w-10 rounded-xl" />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <Skeleton className="h-4 w-4/6" />
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
+                      {[...Array(4)].map((_, i) => (
+                        <Skeleton key={i} className="aspect-4/3 rounded-2xl" />
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+
+        <footer className="mt-20 text-center border-t border-slate-100 dark:border-slate-800 pt-12">
+          <p className="text-slate-400 text-sm font-medium">Built for the curious traveler • &copy; 2026 NomadAI</p>
+        </footer>
       </div>
     </div>
   );

@@ -17,9 +17,9 @@ export async function POST(request) {
 
     console.log('✅ Making requests to OpenRouter and Unsplash...');
 
-    // Get travel recommendations from OpenRouter
+    
     const [recommendationResponse, imagesResponse] = await Promise.all([
-      // Travel recommendations
+      
       fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {

@@ -1,205 +1,100 @@
-# Travel Recommendation System
+# NomadAI - Professional AI Travel Planner
+
+A next-generation travel planning application that combines the power of DeepSeek AI with immersive Unsplash imagery to create personalized, visually stunning travel itineraries.
 
 ## Project Overview
 
-A full-stack web application that provides AI-generated travel recommendations and destination imagery. The system combines large language model capabilities with visual content to deliver comprehensive travel planning assistance.
+NomadAI is a modern, full-stack web application designed to allow users to generate comprehensive travel guides for any destination. It features a polished, human-centric UI with smooth animations, dark/light mode support, and a responsive design that works seamlessly across devices.
 
-## Technical Specifications
+## Key Features
 
-### Core Technologies
-- **Frontend Framework**: Next.js 16.0.3 with App Router
-- **Styling**: Tailwind CSS 3.4.0
-- **Runtime**: Node.js 18+ 
-- **Package Manager**: npm
+- **AI-Powered Recommendations**: Generates detailed, structured travel itineraries using DeepSeek AI.
+- **Immersive Visuals**: dynamically fetches high-resolution, curated images from Unsplash.
+- **Interactive UI**: Enhanced with **Framer Motion** for smooth entrances, hover effects, and layout transitions.
+- **Theme Support**: Fully integrated **Dark/Light mode** with system preference detection, designed for visual comfort.
+- **Responsive Design**: Optimized for everything from mobile phones to large desktop screens.
+- **Modern Components**: Built with **Shadcn UI** for a accessible, professional-grade component library.
 
-### External Service Integrations
-- **AI Service**: DeepSeek Chat API via OpenRouter gateway
-- **Image Service**: Unsplash REST API
-- **Authentication**: API key-based service authentication
+## Technical Stack
 
-## System Architecture
+### Core Framework
+- **Next.js 16.0.3**: App Router architecture for robust routing and server-side rendering.
+- **React 19**: Leveraging the latest React features for efficient UI rendering.
+- **Node.js**: Server-side runtime environment.
 
-### Component Structure
-```
-src/
-├── app/
-│   ├── api/recommend/route.js        # Primary recommendation endpoint
-│   ├── layout.js                     # Application root layout
-│   └── page.js                       # Homepage component
-├── components/
-│   ├── TravelBot.js                  # Main application interface
-│   └── ImageGallery.js               # Image display component
-└── hooks/
-    └── useRecommendation.js          # Data fetching logic
-```
+### Styling & UI
+- **Tailwind CSS v4**: Utility-first CSS framework for rapid, responsive styling.
+- **Shadcn UI**: Reusable, accessible component components (Buttons, Cards, Dialogs, etc.) built on Radix UI.
+- **Framer Motion**: Production-ready animation library for React.
+- **Lucide React**: Beautiful, consistent icon set.
+- **next-themes**: Seamless theme switching (Light/Dark/System).
+- **tw-animate-css**: Tailwind plugin for classical CSS animations.
 
-### API Integration Pattern
-- Parallel request handling for AI and image services
-- Unified error handling with status code mapping
-- Response caching at service layer
-- Request validation and sanitization
+### AI & Data Services
+- **DeepSeek Chat API** (via OpenRouter): Provides intelligent, context-aware travel advice.
+- **Unsplash API**: Delivers high-quality, relevant destination photography.
 
-## Implementation Details
-
-### Core Features
-1. **Destination Analysis**
-   - Structured attraction recommendations
-   - Local cuisine identification
-   - Seasonal travel timing
-   - Practical travel advisories
-
-2. **Visual Content Delivery**
-   - High-resolution destination imagery
-   - Responsive grid layout
-   - Modal image viewer
-   - Lazy loading implementation
-
-3. **User Interface**
-   - Mobile-responsive design
-   - Real-time search functionality
-   - Loading state management
-   - Error state handling
-
-### Data Flow
-1. User input validation and sanitization
-2. Parallel API calls to OpenRouter and Unsplash
-3. Response parsing and formatting
-4. Client-side rendering with state synchronization
-
-## Configuration Requirements
-
-### Environment Variables
-```bash
-# AI Service Configuration
-DEEPSEEK_API_KEY=openrouter_api_key_here
-
-# Image Service Configuration  
-UNSPLASH_ACCESS_KEY=unsplash_access_key_here
-```
-
-### Service Accounts
-1. **OpenRouter Account**
-   - Registration: https://openrouter.ai
-   - Service tier: Free (50 requests/hour)
-   - Model: deepseek/deepseek-chat
-
-2. **Unsplash Developer Account**
-   - Registration: https://unsplash.com/developers
-   - Service tier: Free (50 requests/hour)
-   - Scope: Public read access
-
-## Development Setup
+## Getting Started
 
 ### Prerequisites
 - Node.js 18.17.0 or later
-- npm 9.0.0 or later
-- Modern web browser with ES2022 support
+- npm or yarn
 
-### Installation Sequence
-```bash
-# Project initialization
-npm create next-app@latest travel-recommendation-bot --js --eslint --tailwind --app --src-dir --import-alias "@/*"
+### Installation
 
-# Dependency installation
-npm install
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd nomad-ai
+   ```
 
-# Development server initiation
-npm run dev
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables:**
+   Create a `.env.local` file in the root directory and add your API keys:
+   ```env
+   # AI Service Configuration (OpenRouter)
+   DEEPSEEK_API_KEY=your_openrouter_api_key_here
+
+   # Image Service Configuration (Unsplash)
+   UNSPLASH_ACCESS_KEY=your_unsplash_access_key_here
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── layout.js          # Root layout with ThemeProvider
+│   └── globals.css        # Global styles & Tailwind directives
+├── components/
+│   ├── ui/                # Shadcn UI components (Button, Card, etc.)
+│   ├── TravelBot.js       # Main application logic & interface
+│   ├── ImageGallery.js    # Interactive image grid & lightbox
+│   ├── mode-toggle.jsx    # Theme switcher component
+│   └── theme-provider.jsx # Next-themes provider wrapper
+├── hooks/
+│   └── useRecommendation.js # Custom hook for API logic
+└── lib/
+    └── utils.js           # Utility functions (cn, etc.)
 ```
 
-### Build Process
-```bash
-# Production build generation
-npm run build
+## Implementation Highlights
 
-# Production server initiation  
-npm start
-```
+- **Theming**: The application uses CSS variables and `next-themes` to support a default light mode that switches gracefully to a refined dark mode. Colors are carefully selected (using `oklch` color space) to ensure readability and aesthetic appeal in all contexts.
+- **Animations**: Components utilize `framer-motion` for complex interactions (like the lightbox expansion) and standard CSS transitions for micro-interactions, creating a "alive" feel.
+- **Accessibility**: Built on Radix UI primitives ensures keyboard navigation and screen reader support for interactive elements.
 
-## Deployment Configuration
+## License
 
-### Platform Requirements
-- Node.js runtime environment
-- Environment variable support
-- Static asset serving capability
-
-### Deployment Targets
-- **Vercel**: Native Next.js platform
-- **Netlify**: Static site deployment
-- **Node.js Server**: Traditional hosting
-
-### Build Optimization
-- Automatic code splitting
-- Image optimization pipeline
-- CSS minimization
-- JavaScript bundle compression
-
-## Performance Characteristics
-
-### Response Times
-- Initial page load: < 3 seconds
-- API response: 2-4 seconds
-- Image loading: < 2 seconds
-
-### Resource Utilization
-- Bundle size: ~150 KB compressed
-- Memory usage: < 100 MB
-- Concurrent users: 50+ (free tier limits)
-
-## API Documentation
-
-### Recommendation Endpoint
-**POST /api/recommend**
-```javascript
-// Request
-{
-  "place": "string (required)"
-}
-
-// Response
-{
-  "recommendation": "string",
-  "images": "array"
-}
-```
-
-### Error Handling
-- 400: Invalid input parameters
-- 500: External service failure
-- 503: Rate limit exceeded
-
-## Maintenance Procedures
-
-### Monitoring
-- API response time tracking
-- Error rate monitoring
-- Rate limit utilization
-
-### Updates
-- Monthly dependency updates
-- Quarterly security patches
-- Annual major version reviews
-
-## License and Compliance
-
-### Licensing
-- MIT License for application code
-- Unsplash API Terms for imagery
-- OpenRouter Terms for AI services
-
-### Data Handling
-- No user data persistence
-- No tracking implementation
-- No personal information collection
-
-## Support Resources
-
-### Documentation
-- Next.js documentation: https://nextjs.org/docs
-- Tailwind CSS documentation: https://tailwindcss.com/docs
-- OpenRouter API documentation: https://openrouter.ai/docs
-
-### Issue Resolution
-- Error logging in development mode
-- Service status monitoring
-- Fallback content delivery
+This project is licensed under the MIT License.
