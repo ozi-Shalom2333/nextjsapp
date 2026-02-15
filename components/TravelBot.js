@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plane, Compass, MapPin, Sparkles, Loader2, ArrowRight, Share2, Printer } from 'lucide-react';
+import { Plane, Compass, MapPin, Sparkles, Loader2, ArrowRight, Share2, Printer, Check } from 'lucide-react';
 import useRecommendation from '@/hooks/useRecommendation';
 import ImageGallery from '@/components/ImageGallery';
 import { Button } from '@/components/ui/button';
@@ -13,12 +13,37 @@ import { ModeToggle } from '@/components/mode-toggle';
 
 export default function TravelBot() {
   const [place, setPlace] = useState('');
+  const [isSharing, setIsSharing] = useState(false);
   const { getRecommendation, recommendation, images, loading, error } = useRecommendation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!place.trim()) return;
     await getRecommendation(place);
+  };
+
+  const handleShare = async () => {
+    try {
+      const shareData = {
+        title: `Travel Guide to ${place}`,
+        text: `Check out this travel guide for ${place} on NomadAI!\n\n${recommendation}\n\n`,
+        url: window.location.href,
+      };
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.title + '\n\n' + shareData.text + shareData.url);
+        setIsSharing(true);
+        setTimeout(() => setIsSharing(false), 2000);
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const formatRecommendation = (text) => {
@@ -115,12 +140,14 @@ export default function TravelBot() {
   };
 
 
+
+
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-12 px-4 transition-colors duration-500">
       <div className="max-w-4xl lg:max-w-5xl mx-auto">
         
         {/* Header */}
-        <header className="mb-12">
+        <header className="mb-12 print:hidden">
           <motion.nav 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -140,7 +167,7 @@ export default function TravelBot() {
         </header>
 
         <main>
-          <div className="max-w-3xl mx-auto mb-20">
+          <div className="max-w-3xl mx-auto mb-20 print:hidden">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -177,7 +204,10 @@ export default function TravelBot() {
                   {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    <ArrowRight className="w-5 h-5" />
+                    <div className="flex items-center gap-2">
+                      <p>Search</p>
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
                   )}
                 </Button>
               </form>
@@ -216,11 +246,21 @@ export default function TravelBot() {
                           {place.toUpperCase()}
                         </CardTitle>
                       </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="icon" className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl">
-                          <Share2 className="w-4 h-4" />
+                      <div className="flex gap-2 print:hidden">
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={handleShare}
+                          className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl"
+                        >
+                          {isSharing ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
                         </Button>
-                        <Button variant="outline" size="icon" className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl">
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={handlePrint}
+                          className="bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white rounded-xl"
+                        >
                           <Printer className="w-4 h-4" />
                         </Button>
                       </div>
@@ -282,7 +322,7 @@ export default function TravelBot() {
           </AnimatePresence>
         </main>
 
-        <footer className="mt-20 text-center border-t border-slate-100 dark:border-slate-800 pt-12">
+        <footer className="mt-20 text-center border-t border-slate-100 dark:border-slate-800 pt-12 print:hidden">
           <p className="text-slate-400 text-sm font-medium">Built for the curious traveler • &copy; 2026 NomadAI</p>
         </footer>
       </div>
