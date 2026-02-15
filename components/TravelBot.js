@@ -177,6 +177,7 @@ export default function TravelBot() {
                   {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
+                    Search
                     <ArrowRight className="w-5 h-5" />
                   )}
                 </Button>
