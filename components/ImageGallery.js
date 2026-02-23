@@ -1,12 +1,40 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Maximize2, X, Camera, User, ExternalLink } from 'lucide-react';
+import { Maximize2, X, Camera, User, ExternalLink, Download, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 export default function ImageGallery({ images, place }) {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async (image) => {
+    setDownloading(true);
+    try {
+      const imageUrl = image.urls.raw || image.urls.full || image.urls.regular;
+      const response = await fetch(`/api/download?url=${encodeURIComponent(imageUrl)}`);
+      if (!response.ok) throw new Error('Download failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nomadai-${place || 'capture'}-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download error:', err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleViewSource = (image) => {
+    const sourceUrl = image.links?.html || `https://unsplash.com/photos/${image.id}`;
+    window.open(sourceUrl, '_blank', 'noopener,noreferrer');
+  };
 
   // Close on Escape key
   useEffect(() => {
@@ -121,10 +149,22 @@ export default function ImageGallery({ images, place }) {
                   </div>
                   
                     <div className="flex gap-3">
-                    <Button variant="outline" className="rounded-xl bg-white dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white font-bold h-12 px-6">
-                      Download HD
+                    <Button
+                      variant="outline"
+                      className="rounded-xl bg-white dark:bg-white/5 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white font-bold h-12 px-6"
+                      onClick={() => handleDownload(selectedImage)}
+                      disabled={downloading}
+                    >
+                      {downloading ? (
+                        <><Loader2 className="mr-2 w-4 h-4 animate-spin" /> Downloading...</>
+                      ) : (
+                        <><Download className="mr-2 w-4 h-4" /> Download HD</>
+                      )}
                     </Button>
-                    <Button className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 px-6">
+                    <Button
+                      className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 px-6"
+                      onClick={() => handleViewSource(selectedImage)}
+                    >
                       View Source
                       <ExternalLink className="ml-2 w-4 h-4" />
                     </Button>
